@@ -5,6 +5,13 @@ var router = express.Router();
 const fs = require('fs')
 var formidable = require('formidable');
 
+//lowdb 導入
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+ const adapter = new FileSync(__dirname+'/../data/db.json')
+const db = low(adapter)
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('list');
