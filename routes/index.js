@@ -11,6 +11,9 @@ const FileSync = require('lowdb/adapters/FileSync')
  const adapter = new FileSync(__dirname+'/../data/db.json')
 const db = low(adapter)
 
+//導入shortid
+const shortid = require('shortid')
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -24,7 +27,12 @@ router.get('/create', function(req, res, next) {
 
 /* GET home page. */
 router.post('/create', function(req, res, next) {
-  res.render('create');
+  // db.get('accounts').push(req.body).write();
+  let id = shortid.generate();
+  console.log(req.body)
+  //寫入資料
+  db.get('accounts').unshift({id:id, ...req.body}).write();
+  res.render('success', {msg:'新增成功'},{url:'/account'});
 });
 
 //顯示網頁
@@ -53,6 +61,11 @@ router.post('/portrait',(req, res, next)=>{
     // let url = '/images/'+files.portrait.newFilename;
     
     let url = '/images/'+files.portrait.originalFilename;
+
+    let id = shortid.generate();
+    console.log(req.body)
+    //寫入資料
+    db.get('accounts').unshift({id:id,url,fields, ...req.body}).write();
 
     // Rename the file
     let NewFile =__dirname +'/../public/images/'+ files.portrait.newFilename;
