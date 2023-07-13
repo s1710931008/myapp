@@ -33,16 +33,22 @@
               <div class="panel-heading"><%= item.time %></div>
               <div class="panel-body">
                 <div class="col-xs-6"><%= item.title %></div>
+                <div class="col-xs-6"><img src="<%= item.url %>" alt=""></div>
                 <div class="col-xs-2 text-center">
                   <span class="label <%= item.type==='-1' ? 'label-warning' : 'label-success'  %>"><%= item.type==='-1' ? '支出' : '收入'  %></span>
                 </div>
                 <div class="col-xs-2 text-right"><%= item.account %> 元</div>
                 <div class="col-xs-2 text-right">
-                  <a href="/account/<%= item.id %>">
+                  <a class="delBtn" href="/account/<%= item.id %>">
                   <span
                     class="glyphicon glyphicon-remove"
                     aria-hidden="true"
                   ></span>
+                  <a href="/update/<%= item.id %>">
+                    <span
+                      class="glyphicon glyphicon-edit"
+                      aria-hidden="true"
+                    ></span>
                 </a>
                 </div>
               </div>
@@ -54,4 +60,32 @@
       </div>
     </div>
   </body>
+  <script>
+    let delBtns = document.querySelectorAll('.delBtn');
+    // // let UpBtn = document.querySelectorAll('.UpBtn');
+
+    // //刪除事件
+    delBtns.forEach(items =>{
+      items.addEventListener('click',function(e){
+        if(confirm('確定要刪除嗎')){
+          return true;
+        }else{
+          //阻止行為
+          e.prevntDefawlt();
+        }
+      })
+    })
+
+    // //修改
+    // UpBtn.forEach(items =>{
+    //   items.addEventListener('click',function(e){
+    //     if(confirm('確定要修改嗎')){
+    //       return true;
+    //     }else{
+    //       //阻止行為
+    //       e.prevntDefawlt();
+    //     }
+    //   })
+    // })
+  </script>
 </html>

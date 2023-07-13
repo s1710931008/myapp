@@ -17,22 +17,24 @@ const shortid = require('shortid')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('list');
+  let accounts = db.get('accounts').value();
+  console.log(accounts)
+  res.render('list',{accounts});
 });
 
-/* GET home page. */
+/* get 填寫建立內容 */
 router.get('/create', function(req, res, next) {
   res.render('create');
 });
 
-/* GET home page. */
+/* 建立存檔 */
 router.post('/create', function(req, res, next) {
   // db.get('accounts').push(req.body).write();
   let id = shortid.generate();
   console.log(req.body)
   //寫入資料
   db.get('accounts').unshift({id:id, ...req.body}).write();
-  res.render('success', {msg:'新增成功'},{url:'/account'});
+  res.redirect("/");
 });
 
 //顯示網頁
@@ -43,6 +45,8 @@ router.get('/portrait',(req,res)=>{
 //處理文件上傳
 //文件上傳
 router.post('/portrait',(req, res, next)=>{
+ 
+  /* 引用檔案上傳模板 */
   const form = formidable({ 
     multiples: true,
     // 設置檔案位置
@@ -50,6 +54,7 @@ router.post('/portrait',(req, res, next)=>{
     keepExtensions: true
   });
 
+  /* 檔案上傳 */
   form.parse(req, (err, fields, files) => {
     if (err) {
       next(err);
@@ -67,7 +72,7 @@ router.post('/portrait',(req, res, next)=>{
     //寫入資料
     db.get('accounts').unshift({id:id,url,fields, ...req.body}).write();
 
-    // Rename the file
+    /* 上傳案更改檔案 */
     let NewFile =__dirname +'/../public/images/'+ files.portrait.newFilename;
     let NewOrg =__dirname +'/../public/images/' + files.portrait.originalFilename;
     console.log(NewFile)
@@ -83,6 +88,25 @@ router.post('/portrait',(req, res, next)=>{
 
     res.send(url);
   });
+
 })
+
+/* 刪除檔案 */
+router.get('/account/:id', function(req, res) {
+  //獲取 params id
+  let id = req.params.id;
+  console.log(id)
+  db.get('accounts').remove({id:id}).write();
+  res.redirect("/");
+});
+
+/* 更新編輯 */
+router.get('/edit/:id', function(req, res) {
+  //獲取 params id
+  let id = req.params.id;
+  console.log(id)
+  str=db.get('accounts').find({id:id}).value();
+  res.render('edit',{str})
+});
 
 module.exports = router;
